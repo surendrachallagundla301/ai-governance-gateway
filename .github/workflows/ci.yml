@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check . && ruff format --check .
+      - name: Train classifier
+        run: python -m governance_gateway.ml.train --out models
+      - name: Model quality gate (held-out set)
+        run: python -m governance_gateway.ml.evaluate --card models/model_card.json --min-recall 0.8 --min-precision 0.8
+      - name: Tests
+        run: pytest -q
+      - name: Evidence pack
+        run: python -m governance_gateway.report --out evidence.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: model-and-evidence
+          path: |
+            models/model_card.json
+            evidence.md
+
+  image:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t ai-governance-gateway:${{ github.sha }} .

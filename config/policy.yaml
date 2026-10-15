@@ -1,0 +1,27 @@
+# Which agent may call which tool. Anything not granted here is denied.
+tools:
+  search_knowledge_base:
+    risk: low
+  get_customer:
+    risk: medium
+  create_ticket:
+    risk: low
+  export_customer_data:
+    risk: high
+    requires_human_approval: true
+
+agents:
+  support-assistant:
+    owner: customer-support@example.com
+    allowed_tools: [search_knowledge_base, get_customer, create_ticket]
+    max_calls_per_minute: 30
+
+  faq-bot:
+    owner: digital-team@example.com
+    allowed_tools: [search_knowledge_base]
+    max_calls_per_minute: 60
+
+  data-steward-agent:
+    owner: data-governance@example.com
+    allowed_tools: [search_knowledge_base, export_customer_data]
+    max_calls_per_minute: 5

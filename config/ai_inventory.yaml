@@ -1,0 +1,39 @@
+# Example AI inventory, including "shadow AI" found during discovery.
+systems:
+  - name: Support Assistant
+    owner: customer-support@example.com
+    purpose: Answers customer questions and opens tickets via the governance gateway
+    use_case: customer_support
+    provider: Azure OpenAI
+    interacts_with_people: true
+    data_categories: [contact_details, account_data]
+    human_oversight: Escalates to a human agent on request or low confidence
+
+  - name: Resume Screening Copilot
+    owner: talent-acquisition@example.com
+    purpose: Ranks job applicants for recruiters
+    use_case: employment_hiring
+    provider: AWS Bedrock
+    data_categories: [employment_history, special_category]
+    human_oversight: ""
+
+  - name: Loan Pre-Approval Model
+    owner: lending-analytics@example.com
+    purpose: Scores applicants for consumer credit
+    use_case: essential_services_credit
+    provider: in-house
+    data_categories: [financial_data]
+    human_oversight: Underwriter reviews every decline
+
+  - name: Marketing Copy Generator (shadow AI)
+    owner: ""
+    purpose: Team-purchased SaaS tool that drafts campaign copy
+    use_case: content_generation
+    provider: unknown SaaS
+    generates_content: true
+
+  - name: Log Anomaly Detector
+    owner: sre@example.com
+    purpose: Flags unusual patterns in infrastructure logs
+    use_case: it_operations
+    provider: in-house
